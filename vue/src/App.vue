@@ -45,10 +45,6 @@
                                         <img src="/netflix.webp" @click="toggle('nfx')" class="rounded-xl"
                                             :class="!isActive('nfx') ? 'inactive' : ''" role="button" />
                                     </Popper>
-                                    <Popper v-show="showProvider('nfk')" hover content="Netflix Kids">
-                                        <img src="/netflixkids.webp" @click="toggle('nfk')" class="rounded-xl"
-                                            :class="!isActive('nfk') ? 'inactive' : ''" role="button" />
-                                    </Popper>
                                     <Popper v-show="showProvider('hbm')" hover content="HBO Max">
                                         <img src="/hbo.webp" @click="toggle('hbm')" class="rounded-xl"
                                             :class="!isActive('hbm') ? 'inactive' : ''" role="button" />
@@ -76,6 +72,10 @@
                                     <Popper v-show="showProvider('hlu')" hover content="Hulu">
                                         <img src="/hulu.webp" @click="toggle('hlu')" class="rounded-xl"
                                             :class="!isActive('hlu') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('nfk')" hover content="Netflix Kids">
+                                        <img src="/netflixkids.webp" @click="toggle('nfk')" class="rounded-xl"
+                                            :class="!isActive('nfk') ? 'inactive' : ''" role="button" />
                                     </Popper>
                                     <Popper v-show="showProvider('cts')" hover content="Curiosity Stream">
                                         <img src="/curiositystream.webp" @click="toggle('cts')" class="rounded-xl"
@@ -133,6 +133,22 @@
                                     <Popper v-show="showProvider('dpe')" hover content="Discovery+">
                                         <img src="/discovery-plus.webp" @click="toggle('dpe')" class="rounded-xl"
                                             :class="!isActive('dpe') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('mbi')" hover content="Mubi">
+                                        <img src="/mubi.webp" @click="toggle('mbi')" class="rounded-xl"
+                                            :class="!isActive('mbi') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('vik')" hover content="Rakuten Viki">
+                                        <img src="/viki.webp" @click="toggle('vik')" class="rounded-xl"
+                                            :class="!isActive('vik') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('sgo')" hover content="Sky Go">
+                                        <img src="/skygo.webp" @click="toggle('sgo')" class="rounded-xl"
+                                            :class="!isActive('sgo') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('sonyliv')" hover content="Sony Liv">
+                                        <img src="/sonyliv.webp" @click="toggle('sonyliv')" class="rounded-xl"
+                                            :class="!isActive('sonyliv') ? 'inactive' : ''" role="button" />
                                     </Popper>
                                 </div>
 
@@ -210,6 +226,8 @@ const regions = {
         'pcp',
         'stz',
         'dpe',
+        'mbi',
+        'vik',
     ],
     'Brazil': [
         'nfx',
@@ -224,9 +242,9 @@ const regions = {
         'gop',
         'mgl',
         'cts',
+        'mbi',
     ],
     'India': [
-        'hay',
         'nfx',
         'nfk',
         'atp',
@@ -237,16 +255,20 @@ const regions = {
         'mgl',
         'cts',
         'dpe',
+        'sonyliv',
+        'mbi',
+        'vik',
     ],
     'Turkey': [
         'nfx',
         'nfk',
         'dnp',
-        'atp',
         'amp',
         'cru',
+        'hbm',
         'mgl',
         'cts',
+        'mbi',
     ],
     'Netherlands': [
         'nfx',
@@ -263,6 +285,7 @@ const regions = {
         'cts',
         'nlz',
         'dpe',
+        'mbi',
     ],
     'France': [
         'nfx',
@@ -273,6 +296,21 @@ const regions = {
         'hbm',
         'hay',
         'cpd',
+        'mbi',
+    ],
+    'Germany': [
+        'nfx',
+        'nfk',
+        'dnp',
+        'amp',
+        'atp',
+        'cru',
+        'hay',
+        'mgl',
+        'cts',
+        'sgo',
+        'dpe',
+        'vik',
     ],
     'Any': [
         'nfx',
@@ -298,6 +336,10 @@ const regions = {
         'cpd',
         'stz',
         'dpe',
+        'mbi',
+        'vik',
+        'sgo',
+        'sonyliv',
     ],
 };
 

@@ -848,3 +848,15 @@ type PackagePlanOffer {
     retailPriceValue: Float
     children: [PackagePlanOffer!]
 }
+
+query Packages {
+    packages(platform: WEB, country: US) {
+        id
+        icon
+        packageId
+        clearName
+        shortName
+        technicalName
+        iconWide
+    }
+}

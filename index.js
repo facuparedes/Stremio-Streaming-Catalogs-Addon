@@ -113,6 +113,10 @@ let movies = {
     'sst': [],
     'nlz': [],
     'stz': [],
+    'mbi': [],
+    'vik': [],
+    'sgo': [],
+    'sonyliv': [],
     //'hay': [],
     'cpd': [],
     //'dpe': [],
@@ -138,6 +142,10 @@ let series = {
     'sst': [],
     'nlz': [],
     'stz': [],
+    //'mbi': [],
+    'vik': [],
+    'sgo': [],
+    'sonyliv': [],
     'hay': [],
     'cpd': [],
     'dpe': [],
@@ -186,6 +194,10 @@ async function loadNewCatalog() {
     movies.gop = await addon.getMetas('MOVIE', ['gop'], 'BR', 'br');
     movies.cpd = await addon.getMetas('MOVIE', ['cpd'], 'FR', 'fr');
     movies.stz = await addon.getMetas('MOVIE', ['stz'], 'US');
+    movies.mbi = await addon.getMetas('MOVIE', ['mbi'], 'US');
+    movies.vik = await addon.getMetas('MOVIE', ['vik'], 'US');
+    movies.sgo = await addon.getMetas('MOVIE', ['sgo'], 'DE', 'de');
+    movies.sonyliv = await addon.getMetas('MOVIE', ['sonyliv'], 'IN', 'hi');
 
     series.nfx = await addon.getMetas('SHOW', ['nfx'], 'GB');
     series.nfk = await addon.getMetas('SHOW', ['nfk'], 'US');
@@ -210,6 +222,10 @@ async function loadNewCatalog() {
     series.gop = await addon.getMetas('SHOW', ['gop'], 'BR', 'br');
     series.cpd = await addon.getMetas('SHOW', ['cpd'], 'FR', 'fr');
     series.stz = await addon.getMetas('SHOW', ['stz'], 'US');
+    //series.mbi = await addon.getMetas('SHOW', ['mbi'], 'US'); // 6 results
+    series.vik = await addon.getMetas('SHOW', ['vik'], 'US');
+    series.sgo = await addon.getMetas('SHOW', ['sgo'], 'DE', 'de');
+    series.sonyliv = await addon.getMetas('SHOW', ['sonyliv'], 'IN', 'hi');
     
     // Save to cache (if caching is enabled)
     if (USE_CACHE) {
@@ -519,6 +535,49 @@ app.get('/:configuration/manifest.json', (req, res) => {
             id: 'dpe',
             type: 'series',
             name: 'Discovery+',
+        });
+    }
+    if (selectedProviders.includes('mbi')) {
+        catalogs.push({
+            id: 'mbi',
+            type: 'movie',
+            name: 'Mubi',
+        });
+    }
+    if (selectedProviders.includes('vik')) {
+        catalogs.push({
+            id: 'vik',
+            type: 'movie',
+            name: 'Rakuten Viki',
+        });
+        catalogs.push({
+            id: 'vik',
+            type: 'series',
+            name: 'Rakuten Viki',
+        });
+    }
+    if (selectedProviders.includes('sgo')) {
+        catalogs.push({
+            id: 'sgo',
+            type: 'movie',
+            name: 'Sky Go',
+        });
+        catalogs.push({
+            id: 'sgo',
+            type: 'series',
+            name: 'Sky Go',
+        });
+    }
+    if (selectedProviders.includes('sonyliv')) {
+        catalogs.push({
+            id: 'sonyliv',
+            type: 'movie',
+            name: 'Sony Liv',
+        });
+        catalogs.push({
+            id: 'sonyliv',
+            type: 'series',
+            name: 'Sony Liv',
         });
     }
 
