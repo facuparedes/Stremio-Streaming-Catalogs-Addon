@@ -616,6 +616,104 @@ app.get('/:configuration/manifest.json', (req, res) => {
             name: 'Sony Liv',
         });
     }
+    
+    // New providers
+    if (selectedProviders.includes('shd')) {
+        catalogs.push({
+            id: 'shd',
+            type: 'movie',
+            name: 'Shudder',
+        });
+        catalogs.push({
+            id: 'shd',
+            type: 'series',
+            name: 'Shudder',
+        });
+    }
+    if (selectedProviders.includes('bbo')) {
+        catalogs.push({
+            id: 'bbo',
+            type: 'movie',
+            name: 'BritBox',
+        });
+        catalogs.push({
+            id: 'bbo',
+            type: 'series',
+            name: 'BritBox',
+        });
+    }
+    if (selectedProviders.includes('act')) {
+        catalogs.push({
+            id: 'act',
+            type: 'movie',
+            name: 'Acorn TV',
+        });
+        catalogs.push({
+            id: 'act',
+            type: 'series',
+            name: 'Acorn TV',
+        });
+    }
+    if (selectedProviders.includes('itv')) {
+        catalogs.push({
+            id: 'itv',
+            type: 'movie',
+            name: 'ITVX',
+        });
+        catalogs.push({
+            id: 'itv',
+            type: 'series',
+            name: 'ITVX',
+        });
+    }
+    if (selectedProviders.includes('bbc')) {
+        catalogs.push({
+            id: 'bbc',
+            type: 'movie',
+            name: 'BBC iPlayer',
+        });
+        catalogs.push({
+            id: 'bbc',
+            type: 'series',
+            name: 'BBC iPlayer',
+        });
+    }
+    if (selectedProviders.includes('crc')) {
+        catalogs.push({
+            id: 'crc',
+            type: 'movie',
+            name: 'Criterion Channel',
+        });
+        catalogs.push({
+            id: 'crc',
+            type: 'series',
+            name: 'Criterion Channel',
+        });
+    }
+    if (selectedProviders.includes('iqi')) {
+        catalogs.push({
+            id: 'iqi',
+            type: 'movie',
+            name: 'iQIYI',
+        });
+        catalogs.push({
+            id: 'iqi',
+            type: 'series',
+            name: 'iQIYI',
+        });
+    }
+    if (selectedProviders.includes('sha')) {
+        catalogs.push({
+            id: 'sha',
+            type: 'movie',
+            name: 'Shahid VIP',
+        });
+        catalogs.push({
+            id: 'sha',
+            type: 'series',
+            name: 'Shahid VIP',
+        });
+    }
 
     // show catalogs for providers
     res.send({

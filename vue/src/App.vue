@@ -150,6 +150,40 @@
                                         <img src="/sonyliv.webp" @click="toggle('sonyliv')" class="rounded-xl"
                                             :class="!isActive('sonyliv') ? 'inactive' : ''" role="button" />
                                     </Popper>
+                                    
+                                    <!-- New providers -->
+                                    <Popper v-show="showProvider('shd')" hover content="Shudder">
+                                        <img src="/shudder.webp" @click="toggle('shd')" class="rounded-xl"
+                                            :class="!isActive('shd') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('bbo')" hover content="BritBox">
+                                        <img src="/britbox.webp" @click="toggle('bbo')" class="rounded-xl"
+                                            :class="!isActive('bbo') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('act')" hover content="Acorn TV">
+                                        <img src="/acorntv.webp" @click="toggle('act')" class="rounded-xl"
+                                            :class="!isActive('act') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('itv')" hover content="ITVX">
+                                        <img src="/itvx.webp" @click="toggle('itv')" class="rounded-xl"
+                                            :class="!isActive('itv') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('bbc')" hover content="BBC iPlayer">
+                                        <img src="/bbciplayer.webp" @click="toggle('bbc')" class="rounded-xl"
+                                            :class="!isActive('bbc') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('crc')" hover content="Criterion Channel">
+                                        <img src="/criterion.webp" @click="toggle('crc')" class="rounded-xl"
+                                            :class="!isActive('crc') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('iqi')" hover content="iQIYI">
+                                        <img src="/iqiyi.webp" @click="toggle('iqi')" class="rounded-xl"
+                                            :class="!isActive('iqi') ? 'inactive' : ''" role="button" />
+                                    </Popper>
+                                    <Popper v-show="showProvider('sha')" hover content="Shahid VIP">
+                                        <img src="/shahid.webp" @click="toggle('sha')" class="rounded-xl"
+                                            :class="!isActive('sha') ? 'inactive' : ''" role="button" />
+                                    </Popper>
                                 </div>
 
                                 <div class="flex">
@@ -228,6 +262,12 @@ const regions = {
         'dpe',
         'mbi',
         'vik',
+        'shd',
+        'bbo',
+        'act',
+        'crc',
+        'iqi',
+        'sha',
     ],
     'Brazil': [
         'nfx',
@@ -312,6 +352,21 @@ const regions = {
         'dpe',
         'vik',
     ],
+    'United Kingdom': [
+        'nfx',
+        'nfk',
+        'dnp',
+        'amp',
+        'atp',
+        'cru',
+        'mgl',
+        'cts',
+        'mbi',
+        'itv',
+        'bbc',
+        'bbo',
+        'act',
+    ],
     'Any': [
         'nfx',
         'nfk',
@@ -340,6 +395,14 @@ const regions = {
         'vik',
         'sgo',
         'sonyliv',
+        'shd',
+        'bbo',
+        'act',
+        'itv',
+        'bbc',
+        'crc',
+        'iqi',
+        'sha',
     ],
 };
 
@@ -376,6 +439,10 @@ function getCountryCodeFromCountry(country) {
             return 'in';
         case 'France':
             return 'fr';
+        case 'United Kingdom':
+            return 'gb';
+        case 'Germany':
+            return 'de';
         default:
             return '';
     }
