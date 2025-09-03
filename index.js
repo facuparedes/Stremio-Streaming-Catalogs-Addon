@@ -120,6 +120,14 @@ let movies = {
     //'hay': [],
     'cpd': [],
     //'dpe': [],
+    'shd': [],
+    'bbo': [],
+    'act': [],
+    'itv': [],
+    'bbc': [],
+    'crc': [],
+    'iqi': [],
+    'sha': [],
 };
 let series = {
     'nfx': [],
@@ -149,6 +157,14 @@ let series = {
     'hay': [],
     'cpd': [],
     'dpe': [],
+    'shd': [],
+    'bbo': [],
+    'act': [],
+    'itv': [],
+    'bbc': [],
+    'crc': [],
+    'iqi': [],
+    'sha': [],
 };
 async function loadNewCatalog() {
     console.log('loadNewCatalog');
@@ -198,6 +214,16 @@ async function loadNewCatalog() {
     movies.vik = await addon.getMetas('MOVIE', ['vik'], 'US');
     movies.sgo = await addon.getMetas('MOVIE', ['sgo'], 'DE', 'de');
     movies.sonyliv = await addon.getMetas('MOVIE', ['sonyliv'], 'IN', 'hi');
+    
+    // New providers
+    movies.shd = await addon.getMetas('MOVIE', ['shd'], 'US');
+    movies.bbo = await addon.getMetas('MOVIE', ['bbo'], 'US');
+    movies.act = await addon.getMetas('MOVIE', ['act'], 'US');
+    movies.crc = await addon.getMetas('MOVIE', ['crc'], 'US');
+    movies.iqi = await addon.getMetas('MOVIE', ['iqi'], 'US');
+    movies.sha = await addon.getMetas('MOVIE', ['sha'], 'US');
+    movies.itv = await addon.getMetas('MOVIE', ['itv'], 'GB');
+    movies.bbc = await addon.getMetas('MOVIE', ['bbc'], 'GB');
 
     series.nfx = await addon.getMetas('SHOW', ['nfx'], 'GB');
     series.nfk = await addon.getMetas('SHOW', ['nfk'], 'US');
@@ -226,6 +252,16 @@ async function loadNewCatalog() {
     series.vik = await addon.getMetas('SHOW', ['vik'], 'US');
     series.sgo = await addon.getMetas('SHOW', ['sgo'], 'DE', 'de');
     series.sonyliv = await addon.getMetas('SHOW', ['sonyliv'], 'IN', 'hi');
+    
+    // New providers series
+    series.shd = await addon.getMetas('SHOW', ['shd'], 'US');
+    series.bbo = await addon.getMetas('SHOW', ['bbo'], 'US');
+    series.act = await addon.getMetas('SHOW', ['act'], 'US');
+    series.crc = await addon.getMetas('SHOW', ['crc'], 'US');
+    series.iqi = await addon.getMetas('SHOW', ['iqi'], 'US');
+    series.sha = await addon.getMetas('SHOW', ['sha'], 'US');
+    series.itv = await addon.getMetas('SHOW', ['itv'], 'GB');
+    series.bbc = await addon.getMetas('SHOW', ['bbc'], 'GB');
     
     // Save to cache (if caching is enabled)
     if (USE_CACHE) {
