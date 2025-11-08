@@ -44,10 +44,8 @@ export default {
                         "excludeIrrelevantTitles": false,
                         "presentationTypes": [],
                         "monetizationTypes": [
-                            "FREE",
                             "FLATRATE",
-                            "ADS"
-                        ]
+                        ],
                     },
                     "language": language,
                     "country": country
