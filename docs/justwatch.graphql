@@ -6,6 +6,9 @@ type Query {
         first: Int! = 70
         after: String
     ): StreamingChartsConnection
+    # NOTE: JustWatch's streaming charts UI only exposes Global (null) plus
+    # these tested countries: AR, AU, BR, CA, DE, EG, ES, FR, GB, IN, IT, MX,
+    # PL, TR, US. Other country codes in the enum may not be accepted here.
     popularTitles(
         country: Country!
         filter: TitleFilter
@@ -61,12 +64,21 @@ enum CreditRole {
 
 enum Country {
     NL
+    AR
     US
     DE
     BR
     AU
-    NZ
     CA
+    EG
+    FR
+    NZ
+    IN
+    IT
+    MX
+    PL
+    ES
+    TR
     GB
     ZA
     IE
@@ -209,6 +221,7 @@ enum NewDateRangeBucket {
 enum PopularityRankTypes { # New enum for category field
     WEEKLY_POPULARITY_SAME_CONTENT_TYPE
     DAILY_POPULARITY_SAME_CONTENT_TYPE
+    MONTHLY_POPULARITY_SAME_CONTENT_TYPE
     # Add other category types as discovered
 }
 
@@ -859,4 +872,148 @@ query Packages {
         technicalName
         iconWide
     }
+}
+
+# Example streaming charts query (movies or shows). Set $countryStreamingCharts
+# to null (Global) or one of the supported codes from the comment above.
+query GetStreamingChartInfo(
+    $countryStreamingCharts: Country
+    $country: Country!
+    $language: Language!
+    $filter: StreamingChartsFilter
+    $first: Int! = 10
+    $platform: Platform! = WEB
+    $withOffers: Boolean! = true
+    $after: String = ""
+) {
+    streamingCharts(
+        country: $countryStreamingCharts
+        filter: $filter
+        first: $first
+        after: $after
+    ) {
+        edges {
+            streamingChartInfo {
+                rank
+                trend
+                trendDifference
+                updatedAt
+                daysInTop10
+                daysInTop100
+                daysInTop1000
+                daysInTop3
+                topRank
+            }
+            cursor
+            node {
+                id
+                objectId
+                objectType
+                offerCount(country: $country, platform: $platform) @include(if: $withOffers)
+                offers(country: $country, platform: $platform, filter: { preAffiliate: true }) @include(if: $withOffers) {
+                    ...TitleOffer
+                }
+                watchNowOffer(country: $country, platform: $platform) {
+                    id
+                    standardWebURL
+                    preAffiliatedStandardWebURL
+                    package {
+                        id
+                        packageId
+                        clearName
+                    }
+                    retailPrice(language: $language)
+                    retailPriceValue
+                    lastChangeRetailPriceValue
+                    currency
+                    presentationType
+                    monetizationType
+                }
+                ... on MovieOrShowOrSeason {
+                    content(country: $country, language: $language) {
+                        title
+                        fullPath
+                        posterUrl
+                        fullPosterUrl: posterUrl(profile: S166, format: JPG)
+                        runtime
+                        originalReleaseYear
+                        genres {
+                            shortName
+                        }
+                    }
+                }
+            }
+        }
+        totalCount
+        pageInfo {
+            startCursor
+            hasPreviousPage
+            hasNextPage
+            endCursor
+        }
+    }
+}
+
+fragment TitleOffer on Offer {
+    id
+    presentationType
+    monetizationType
+    newElementCount
+    retailPrice(language: $language)
+    retailPriceValue
+    userLocalCurrency
+    retailPriceConverted(language: $language)
+    currency
+    lastChangeRetailPriceValue
+    type
+    country
+    package {
+        id
+        packageId
+        clearName
+        shortName
+        technicalName
+        icon(profile: S100)
+        iconWide(profile: S160)
+        planOffers(country: $country, platform: WEB) {
+            title
+            retailPrice(language: $language)
+            isTrial
+            durationDays
+            retailPriceValue
+            retailPriceConverted(language: $language)
+            children {
+                title
+                retailPrice(language: $language)
+                isTrial
+                durationDays
+                retailPriceValue
+            }
+        }
+    }
+    plans(platform: WEB) {
+        title
+        retailPrice(language: $language)
+        isTrial
+        durationDays
+        retailPriceValue
+        retailPriceConverted(language: $language)
+        children {
+            title
+            retailPrice(language: $language)
+            isTrial
+            durationDays
+            retailPriceValue
+        }
+    }
+    standardWebURL
+    preAffiliatedStandardWebURL
+    streamUrl
+    streamUrlExternalPlayer
+    elementCount
+    availableTo
+    subtitleLanguages
+    videoTechnology
+    audioTechnology
+    audioLanguages(language: $language)
 }
