@@ -31,16 +31,46 @@
                         </div>
                         <div class="text-gray-300">
                             <form class="space-y-6" @submit.prevent="installAddon">
-                                <div>
-                                    <p class="text-gray-500 mb-1">Filter providers by country:</p>
-                                    <select v-model="state.country"
-                                        class="w-full text-gray-200 text-sm px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-400">
-                                        <option v-for="country in getCountries()" :key="country" :value="country">
-                                            {{ country }}
-                                        </option>
-                                    </select>
+                                <!-- Netflix Top 10 Section -->
+                                <div class="pb-6 border-b border-gray-700">
+                                    <p class="text-gray-500 mb-3 text-sm">Netflix Top 10:</p>
+                                    <div class="space-y-3">
+                                        <label class="flex items-center text-sm text-gray-300 cursor-pointer">
+                                            <input type="checkbox" v-model="state.netflixTop10Global" class="mr-2 rounded" />
+                                            Global Top 10
+                                        </label>
+                                        <div>
+                                            <label class="flex items-center text-sm text-gray-300 cursor-pointer mb-2">
+                                                <input type="checkbox" v-model="state.netflixTop10Country" class="mr-2 rounded" />
+                                                Country Top 10
+                                            </label>
+                                            <select 
+                                                v-model="state.netflixTop10CountryCode"
+                                                :disabled="!state.netflixTop10Country"
+                                                class="w-full text-gray-200 text-sm px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                <option value="">Select country...</option>
+                                                <option v-for="(name, code) in netflixTop10Countries" :key="code" :value="code">
+                                                    {{ name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-4 grid-rows-2 gap-2">
+                                
+                                <!-- Provider Selection Section -->
+                                <div class="pb-6 border-b border-gray-700">
+                                    <div class="mb-3">
+                                        <p class="text-gray-500 mb-1 text-sm">Filter providers by country:</p>
+                                        <select v-model="state.country"
+                                            class="w-full text-gray-200 text-sm px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-400">
+                                            <option v-for="country in getCountries()" :key="country" :value="country">
+                                                {{ country }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-4 grid-rows-2 gap-2">
                                     <Popper v-show="showProvider('nfx')" hover content="Netflix">
                                         <img src="/netflix.webp" @click="toggle('nfx')" class="rounded-xl"
                                             :class="!isActive('nfx') ? 'inactive' : ''" role="button" />
@@ -150,14 +180,19 @@
                                         <img src="/sonyliv.webp" @click="toggle('sonyliv')" class="rounded-xl"
                                             :class="!isActive('sonyliv') ? 'inactive' : ''" role="button" />
                                     </Popper>
+                                    </div>
                                 </div>
 
-                                <div class="flex">
-                                    <v-input type="text" class="rounded-r-none h-[46px]" placeholder="RPDB key (optional)" pattern="t[0-3]-[a-zA-Z0-9\-]+" v-model="state.rpdbKey" />
-                                    <v-button type="button" class="w-auto rounded-l-none border-l-0 h-[46px]" @click="openUrl('https://ratingposterdb.com/')">?</v-button>
-                                </div>
-
+                                <!-- RPDB Key Section -->
                                 <div>
+                                    <div class="flex">
+                                        <v-input type="text" class="rounded-r-none h-[46px]" placeholder="RPDB key (optional)" pattern="t[0-3]-[a-zA-Z0-9\-]+" v-model="state.rpdbKey" />
+                                        <v-button type="button" class="w-auto rounded-l-none border-l-0 h-[46px]" @click="openUrl('https://ratingposterdb.com/')">?</v-button>
+                                    </div>
+                                </div>
+
+                                <!-- Install Button -->
+                                <div class="pt-1">
                                     <v-button type="submit" variation="primary">Install addon</v-button>
                                 </div>
 
@@ -343,6 +378,143 @@ const regions = {
     ],
 };
 
+// Netflix Top 10 available countries (ISO code -> Display name)
+const netflixTop10Countries = {
+    'AR': 'Argentina',
+    'AU': 'Australia',
+    'AT': 'Austria',
+    'BS': 'Bahamas',
+    'BH': 'Bahrain',
+    'BD': 'Bangladesh',
+    'BE': 'Belgium',
+    'BO': 'Bolivia',
+    'BR': 'Brazil',
+    'BG': 'Bulgaria',
+    'CA': 'Canada',
+    'CL': 'Chile',
+    'CO': 'Colombia',
+    'CR': 'Costa Rica',
+    'HR': 'Croatia',
+    'CY': 'Cyprus',
+    'CZ': 'Czechia',
+    'DK': 'Denmark',
+    'DO': 'Dominican Republic',
+    'EC': 'Ecuador',
+    'EG': 'Egypt',
+    'SV': 'El Salvador',
+    'EE': 'Estonia',
+    'FI': 'Finland',
+    'FR': 'France',
+    'DE': 'Germany',
+    'GR': 'Greece',
+    'GP': 'Guadeloupe',
+    'GT': 'Guatemala',
+    'HN': 'Honduras',
+    'HK': 'Hong Kong',
+    'HU': 'Hungary',
+    'IS': 'Iceland',
+    'IN': 'India',
+    'ID': 'Indonesia',
+    'IE': 'Ireland',
+    'IL': 'Israel',
+    'IT': 'Italy',
+    'JM': 'Jamaica',
+    'JP': 'Japan',
+    'JO': 'Jordan',
+    'KE': 'Kenya',
+    'KW': 'Kuwait',
+    'LV': 'Latvia',
+    'LB': 'Lebanon',
+    'LT': 'Lithuania',
+    'LU': 'Luxembourg',
+    'MY': 'Malaysia',
+    'MV': 'Maldives',
+    'MT': 'Malta',
+    'MQ': 'Martinique',
+    'MU': 'Mauritius',
+    'MX': 'Mexico',
+    'MA': 'Morocco',
+    'NL': 'Netherlands',
+    'NC': 'New Caledonia',
+    'NZ': 'New Zealand',
+    'NI': 'Nicaragua',
+    'NG': 'Nigeria',
+    'NO': 'Norway',
+    'OM': 'Oman',
+    'PK': 'Pakistan',
+    'PA': 'Panama',
+    'PY': 'Paraguay',
+    'PE': 'Peru',
+    'PH': 'Philippines',
+    'PL': 'Poland',
+    'PT': 'Portugal',
+    'QA': 'Qatar',
+    'RE': 'Réunion',
+    'RO': 'Romania',
+    'RU': 'Russia',
+    'SA': 'Saudi Arabia',
+    'RS': 'Serbia',
+    'SG': 'Singapore',
+    'SK': 'Slovakia',
+    'SI': 'Slovenia',
+    'ZA': 'South Africa',
+    'KR': 'South Korea',
+    'ES': 'Spain',
+    'LK': 'Sri Lanka',
+    'SE': 'Sweden',
+    'CH': 'Switzerland',
+    'TW': 'Taiwan',
+    'TH': 'Thailand',
+    'TT': 'Trinidad and Tobago',
+    'TR': 'Türkiye',
+    'UA': 'Ukraine',
+    'AE': 'United Arab Emirates',
+    'GB': 'United Kingdom',
+    'US': 'United States',
+    'UY': 'Uruguay',
+    'VE': 'Venezuela',
+    'VN': 'Vietnam',
+};
+
+// Generate reverse mapping (display name -> ISO code) from netflixTop10Countries
+// Also include common variations/aliases
+const countryNameToCode = Object.fromEntries(
+    Object.entries(netflixTop10Countries).map(([code, name]) => [name, code])
+);
+// Add common aliases
+countryNameToCode['Czech Republic'] = 'CZ';
+countryNameToCode['Korea (South)'] = 'KR';
+countryNameToCode['South Korea'] = 'KR';
+countryNameToCode['Trinidad & Tobago'] = 'TT';
+countryNameToCode['Trinidad and Tobago'] = 'TT';
+countryNameToCode['Britain (UK)'] = 'GB';
+countryNameToCode['United Kingdom'] = 'GB';
+
+function getCountryCodeFromCountry(country) {
+    return countryNameToCode[country] || '';
+}
+
+function getCountries() {
+    return Object.keys(regions);
+}
+
+function getCountry() {
+    return regionsToCountries[Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone] || 'Any';
+}
+
+function getNetflixTop10CountryCode() {
+    const country = getCountry();
+    if (country === 'Any') {
+        return '';
+    }
+    const countryCode = getCountryCodeFromCountry(country);
+    // Check if the country code exists in netflixTop10Countries
+    if (countryCode && netflixTop10Countries[countryCode]) {
+        return countryCode;
+    }
+    return '';
+}
+
 const state = reactive({
     country: getCountry(),
     rpdbKey: '',
@@ -353,6 +525,9 @@ const state = reactive({
         'atp',
         'hbm',
     ],
+    netflixTop10Global: true,
+    netflixTop10Country: false,
+    netflixTop10CountryCode: getNetflixTop10CountryCode(),
     countryCode: null,
     timeStamp: null,
     addonUrl: '',
@@ -360,33 +535,6 @@ const state = reactive({
 
 function openUrl(url) {
     window.open(url, '_blank', 'noopener');
-}
-
-function getCountryCodeFromCountry(country) {
-    switch (country) {
-        case 'Netherlands':
-            return 'nl';
-        case 'United States':
-            return 'us';
-        case 'Turkey':
-            return 'tr';
-        case 'Brazil':
-            return 'br';
-        case 'India':
-            return 'in';
-        case 'France':
-            return 'fr';
-        default:
-            return '';
-    }
-}
-
-function getCountries() {
-    return Object.keys(regions);
-}
-
-function getCountry() {
-    return regionsToCountries[Intl?.DateTimeFormat()?.resolvedOptions()?.timeZone] || 'Any';
 }
 
 function showProvider(provider) {
@@ -406,24 +554,44 @@ function decodeUrlConfig() {
 
     try {
         const configString = atob(decodeURIComponent(urlParts.pop())).split(':');
-        const [providers, rpdbKey, countryCode, timeStamp] = configString;
-        state.rpdbKey = rpdbKey;
-        state.providers = providers.split(',');
-        state.countryCode = countryCode;
-        state.timeStamp = timeStamp;
+        const [providers, rpdbKey, countryCode, timeStamp, netflixTop10Global, netflixTop10Country, netflixTop10CountryCode] = configString;
+        state.rpdbKey = rpdbKey || '';
+        state.providers = providers ? providers.split(',') : [];
+        state.countryCode = countryCode || null;
+        state.timeStamp = timeStamp || null;
+        // Default to true for global, false for country (backward compatibility)
+        state.netflixTop10Global = netflixTop10Global !== undefined ? netflixTop10Global === '1' : true;
+        state.netflixTop10Country = netflixTop10Country !== undefined ? netflixTop10Country === '1' : false;
+        state.netflixTop10CountryCode = netflixTop10CountryCode || '';
     } catch (e) {
         console.log('No valid configuration:', e.message);
     }
 }
 
 function installAddon() {
-    if (!state.providers.length) {
-        alert('Please choose at least 1 provider');
+    if (!state.providers.length && !state.netflixTop10Global && !state.netflixTop10Country) {
+        alert('Please choose at least 1 provider or enable Netflix Top 10');
 
         return;
     }
 
-    const base64 = btoa(`${state.providers.join(',')}:${state.rpdbKey}:${state.countryCode || getCountryCodeFromCountry(state.country)}:${state.timeStamp || Number(new Date())}`);
+    if (state.netflixTop10Country && !state.netflixTop10CountryCode) {
+        alert('Please select a country for Netflix Top 10');
+        return;
+    }
+
+    // Build configuration string: providers:rpdbKey:countryCode:timestamp:netflixTop10Global:netflixTop10Country:netflixTop10CountryCode
+    const configParts = [
+        state.providers.join(','),
+        state.rpdbKey,
+        state.countryCode || getCountryCodeFromCountry(state.country),
+        state.timeStamp || Number(new Date()),
+        state.netflixTop10Global ? '1' : '0',
+        state.netflixTop10Country ? '1' : '0',
+        state.netflixTop10CountryCode || ''
+    ];
+    
+    const base64 = btoa(configParts.join(':'));
     state.addonUrl = `${import.meta.env.VITE_APP_URL}/${encodeURIComponent(base64)}/manifest.json`;
 
     console.log('URL:', state.addonUrl);
