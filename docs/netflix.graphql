@@ -1,0 +1,279 @@
+# Netflix Tudum GraphQL Schema
+# Reverse engineered from window.netflix.reactContext and API responses
+# Endpoint: https://pulse.prod.cloud.netflix.com/graphql
+# 
+# NOTE: This is a reverse-engineered schema. Some types and fields may be incomplete.
+# The API uses persisted queries, so the full query structure is not always visible.
+
+# How to Find Persisted Query IDs:
+# 1. Open browser DevTools (F12)
+# 2. Go to Network tab
+# 3. Filter by "graphql"
+# 4. Navigate to a Netflix Tudum Top 10 page
+# 5. Find the GraphQL request to pulse.prod.cloud.netflix.com/graphql
+# 6. Inspect the request payload to see the persistedQuery.id and version
+#
+# The persisted query ID and version may change - always verify via Network tab
+
+type Query {
+  pulsePage(
+    url: String!
+    params: PulsePageParams
+    withProfile: Boolean
+  ): PulsePage
+}
+
+type PulsePage {
+  id: ID
+  kind: String # e.g., "TOP10"
+  slug: String
+  language: String
+  sections: [PulseSection]
+  seo: PulsePageSEO
+  theme: PulsePageTheme
+  currentCountry: ConsumerCountry
+}
+
+type PulseSection {
+  __typename: String
+  id: ID
+  guid: String
+  entities: [PulseEntity]
+  header: PulseSectionHeader
+  footer: PulseSectionFooter
+  presentation: PulsePresentation
+  loggingData: PulseLoggingData
+}
+
+# Top 10 specific entity
+type PulseTop10ItemEntity implements PulseEntity {
+  __typename: "PulseTop10ItemEntity"
+  id: ID
+  guid: ID
+  theme: PulseEntityTheme
+  
+  top10: Top10Data
+  top10Video: Top10PulseVideo
+  artwork: Top10PulseImages
+  countryRanks: [Top10CountryRank]
+  displayVideo: PulseDisplayVideo
+  slug: String
+}
+
+type Top10Data {
+  __typename: "Top10Data"
+  category: String # "SERIES", "ENGLISH_MOVIES", etc.
+  weeklyRank: Int
+  weeklyHoursViewed: Int
+  weeklyViews: Int
+  cumulativeWeeksInTop10: Int
+  weekEndDate: String # ISO date format
+  runtime: Float # Hours
+  runtimeVaries: Boolean
+  videoId: Int
+  isStaggeredLaunch: Boolean
+  episodeLaunchDetails: EpisodeLaunchDetails
+}
+
+type Top10PulseVideo {
+  __typename: "Top10PulseVideo"
+  title: String
+  videoId: Int
+  shortSynopsis: String
+  releaseYear: Int
+  maturityRating: String # e.g., "PG-13", "R", "TV-MA"
+  runtimeSeconds: Int
+  parentShow: Top10PulseVideo
+  number: Int
+}
+
+type Top10CountryRank {
+  __typename: "Top10CountryRank"
+  countryId: String # ISO2 country code
+  rank: Int
+}
+
+type Top10PulseImages {
+  __typename: "Top10PulseImages"
+  logoArt: Top10PulseImage
+  sdpArt: Top10PulseImage
+  storyArt: Top10PulseImage
+}
+
+type Top10PulseImage {
+  __typename: "Top10PulseImage"
+  alternativeText: String
+  urlsSized: [PulseImageSizeResult]
+}
+
+type PulseImageSizeResult {
+  __typename: "PulseImageSizeResult"
+  url: String
+  width: Int
+  height: Int
+  dominantBackgroundColor: String
+  focalPoint: PulseImageFocalPoint
+}
+
+type PulseImageFocalPoint {
+  __typename: "PulseImageFocalPoint"
+  x: Float
+  y: Float
+}
+
+type PulseDisplayVideo {
+  __typename: "PulseDisplayVideo"
+  video: PulseVideo
+  titlePageSlug: String
+}
+
+type PulseVideo {
+  __typename: String # "Movie", "Show", etc.
+  unifiedEntityId: String # e.g., "Video:81654736"
+  videoId: Int
+  isPlayable: Boolean
+  isInPlaylist: Boolean
+  isInRemindMeList: Boolean
+  isAvailable: Boolean
+  availabilityStartTime: String # ISO datetime
+  promoVideo: PromoVideo
+}
+
+type PromoVideo {
+  __typename: "PromoVideo"
+  video: SupplementalVideo
+}
+
+type SupplementalVideo {
+  __typename: "Supplemental"
+  videoId: Int
+  artwork: Image
+}
+
+type Image {
+  __typename: "Image"
+  url: String
+  alternativeText: String
+}
+
+type ConsumerCountry {
+  __typename: "ConsumerCountry"
+  code: String # ISO2 country code
+}
+
+type PulsePageSEO {
+  __typename: "PulsePageSEO"
+  title: String
+  description: String
+  ogTitle: String
+  ogDescription: String
+  ogImgWithAlt: PulseImage
+  noIndex: Boolean
+}
+
+type PulsePageTheme {
+  __typename: "PulsePageTheme"
+  background: PulseBackground
+  defaultEntityTheme: PulseEntityTheme
+}
+
+type PulseBackground {
+  __typename: String # e.g., "PulseStaticBackground"
+  backgroundColor: PulseColor
+}
+
+type PulseColor {
+  __typename: "PulseColor"
+  hexString: String
+}
+
+type PulseEntityTheme {
+  __typename: "PulseEntityTheme"
+  accentColor: PulseColor
+  backgroundColor: PulseColor
+}
+
+# Other entity types found in sections
+type PulseLinkEntity implements PulseEntity {
+  __typename: "PulseLinkEntity"
+  id: ID
+  slug: String
+  text: String
+  url: String
+}
+
+type PulseCustomEntity implements PulseEntity {
+  __typename: "PulseCustomEntity"
+  id: ID
+  type: String
+  data: JSON
+}
+
+type PulseVideoItemEntity implements PulseEntity {
+  __typename: "PulseVideoItemEntity"
+  id: ID
+  slug: String
+  displayHeadline: String
+  headline: PulseRichTextValue
+  body: PulseRichTextValue
+  timestamp: String # ISO datetime
+  runtime: String
+  previewImage: PulseImage
+}
+
+type PulseRichTextValue {
+  __typename: "PulseSimpleRichTextValue"
+  html: String
+}
+
+type PulseImage {
+  __typename: "PulseImage"
+  url: String
+  alternativeText: String
+  urlsSized: [PulseImageSizeResult]
+}
+
+# Input types
+input PulsePageParams {
+  isWebView: Boolean
+  queryString: String
+}
+
+# Persisted Query Structure
+# Netflix uses persisted queries identified by ID and version
+# Example:
+# {
+#   "operationName": "PulsePageQuery",
+#   "variables": {
+#     "withProfile": false,
+#     "url": "/top10/united-kingdom/tv",
+#     "params": { "isWebView": false }
+#   },
+#   "extensions": {
+#     "persistedQuery": {
+#       "id": "10ca20d3-e892-44af-b52a-f1107400a873",
+#       "version": 102
+#     }
+#   }
+# }
+
+# Known Persisted Queries
+# - PulsePageQuery: id="10ca20d3-e892-44af-b52a-f1107400a873", version=102
+#   Used for Top 10 pages
+
+# URL Patterns for PulsePageQuery
+# - Country-specific: /top10/{country-slug}/tv or /top10/{country-slug} (movies)
+# - Global: /top10/global/tv or /top10/global (movies)
+# - Historical: /top10/{country-slug}/tv?week=YYYY-MM-DD
+
+# Error Types
+# - UNAUTHENTICATED: Field requires authentication (can be ignored for public data)
+# - NOT_FOUND: Video or entity not found
+# - InvalidSyntax: Query syntax error
+
+# Notes
+# - The persisted query ID and version may change - monitor for updates
+# - Some fields return null for unauthenticated requests (this is expected)
+# - The week parameter in URL query string may not work for all historical dates
+# - Country slugs must match Netflix's URL structure (see scripts/netflixTop10.js)
+
