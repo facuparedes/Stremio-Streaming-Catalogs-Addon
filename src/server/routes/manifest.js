@@ -39,6 +39,7 @@ function buildProviderCatalogs(selectedProviders) {
     'vik': { name: 'Rakuten Viki', types: ['movie', 'series'] },
     'sgo': { name: 'Sky Go', types: ['movie', 'series'] },
     'sonyliv': { name: 'Sony Liv', types: ['movie', 'series'] },
+    'mp9': { name: 'Movistar+', types: ['movie', 'series'] },
   };
 
   const seen = new Set();

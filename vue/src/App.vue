@@ -180,6 +180,10 @@
                                         <img src="/sonyliv.webp" @click="toggle('sonyliv')" class="rounded-xl"
                                             :class="!isActive('sonyliv') ? 'inactive' : ''" role="button" />
                                     </Popper>
+                                    <Popper v-show="showProvider('mp9')" hover content="Movistar+">
+                                        <img src="/movistar.webp" @click="toggle('mp9')" class="rounded-xl"
+                                            :class="!isActive('mp9') ? 'inactive' : ''" role="button" />
+                                    </Popper>
                                     </div>
                                 </div>
 
@@ -355,6 +359,7 @@ const regions = {
         'atp',
         'hbm',
         'cru',
+        'mp9',
     ],
     'Any': [
         'nfx',
