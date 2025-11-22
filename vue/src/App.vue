@@ -347,6 +347,15 @@ const regions = {
         'dpe',
         'vik',
     ],
+    'Spain': [
+        'nfx',
+        'nfk',
+        'dnp',
+        'amp',
+        'atp',
+        'hbm',
+        'cru',
+    ],
     'Any': [
         'nfx',
         'nfk',
