@@ -389,6 +389,7 @@ const regions = {
         'vik',
         'sgo',
         'sonyliv',
+        'mp9',
     ],
 };
 
