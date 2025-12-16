@@ -42,14 +42,14 @@ let movies = {
   'nfx': [], 'nfk': [], 'dnp': [], 'amp': [], 'atp': [], 'pmp': [], 'hbm': [],
   'hlu': [], 'pcp': [], 'cru': [], 'jhs': [], 'zee': [], 'vil': [], 'clv': [],
   'gop': [], 'mgl': [], 'cts': [], 'sst': [], 'nlz': [], 'stz': [], 'mbi': [],
-  'vik': [], 'sgo': [], 'sonyliv': [], 'cpd': [],
+  'vik': [], 'sgo': [], 'sonyliv': [], 'cpd': [], 'mp9': [],
 };
 
 let series = {
   'nfx': [], 'nfk': [], 'dnp': [], 'amp': [], 'atp': [], 'pmp': [], 'hbm': [],
   'hlu': [], 'pcp': [], 'cru': [], 'jhs': [], 'zee': [], 'vil': [], 'clv': [],
   'gop': [], 'mgl': [], 'cts': [], 'sst': [], 'nlz': [], 'stz': [], 'vik': [],
-  'sgo': [], 'sonyliv': [], 'hay': [], 'cpd': [], 'dpe': [],
+  'sgo': [], 'sonyliv': [], 'hay': [], 'cpd': [], 'dpe': [], 'mp9': [],
 };
 
 /**
@@ -101,6 +101,7 @@ async function loadNewCatalog() {
   movies.vik = await justwatch.getMetas('MOVIE', ['vik'], 'US');
   movies.sgo = await justwatch.getMetas('MOVIE', ['sgo'], 'DE', 'de');
   movies.sonyliv = await justwatch.getMetas('MOVIE', ['sonyliv'], 'IN', 'hi');
+  movies.mp9 = await justwatch.getMetas('MOVIE', ['mp9'], 'ES', 'es');
 
   series.nfx = await justwatch.getMetas('SHOW', ['nfx'], 'GB');
   series.nfk = await justwatch.getMetas('SHOW', ['nfk'], 'US');
@@ -128,6 +129,7 @@ async function loadNewCatalog() {
   series.vik = await justwatch.getMetas('SHOW', ['vik'], 'US');
   series.sgo = await justwatch.getMetas('SHOW', ['sgo'], 'DE', 'de');
   series.sonyliv = await justwatch.getMetas('SHOW', ['sonyliv'], 'IN', 'hi');
+  series.mp9 = await justwatch.getMetas('SHOW', ['mp9'], 'ES', 'es');
   
   // Save to cache (if caching is enabled)
   if (USE_CACHE) {
