@@ -42,14 +42,16 @@ let movies = {
   'nfx': [], 'nfk': [], 'dnp': [], 'amp': [], 'atp': [], 'pmp': [], 'hbm': [],
   'hlu': [], 'pcp': [], 'cru': [], 'jhs': [], 'zee': [], 'vil': [], 'clv': [],
   'gop': [], 'mgl': [], 'cts': [], 'sst': [], 'nlz': [], 'stz': [], 'mbi': [],
-  'vik': [], 'sgo': [], 'sonyliv': [], 'cpd': [], 'mp9': [],
+  'vik': [], 'sgo': [], 'sonyliv': [], 'cpd': [], 'mp9': [], 'shd': [], 'bbo': [],
+  'act': [], 'itv': [], 'bbc': [], 'al4': [], 'crc': [], 'iqi': [], 'sha': [],
 };
 
 let series = {
   'nfx': [], 'nfk': [], 'dnp': [], 'amp': [], 'atp': [], 'pmp': [], 'hbm': [],
   'hlu': [], 'pcp': [], 'cru': [], 'jhs': [], 'zee': [], 'vil': [], 'clv': [],
   'gop': [], 'mgl': [], 'cts': [], 'sst': [], 'nlz': [], 'stz': [], 'vik': [],
-  'sgo': [], 'sonyliv': [], 'hay': [], 'cpd': [], 'dpe': [], 'mp9': [],
+  'sgo': [], 'sonyliv': [], 'hay': [], 'cpd': [], 'dpe': [], 'mp9': [], 'shd': [],
+  'bbo': [], 'act': [], 'itv': [], 'bbc': [], 'al4': [], 'iqi': [], 'sha': [],
 };
 
 /**
@@ -102,6 +104,15 @@ async function loadNewCatalog() {
   movies.sgo = await justwatch.getMetas('MOVIE', ['sgo'], 'DE', 'de');
   movies.sonyliv = await justwatch.getMetas('MOVIE', ['sonyliv'], 'IN', 'hi');
   movies.mp9 = await justwatch.getMetas('MOVIE', ['mp9'], 'ES', 'es');
+  movies.shd = await justwatch.getMetas('MOVIE', ['shd'], 'US');
+  movies.bbo = await justwatch.getMetas('MOVIE', ['bbo'], 'US');
+  movies.act = await justwatch.getMetas('MOVIE', ['act'], 'US');
+  movies.crc = await justwatch.getMetas('MOVIE', ['crc'], 'US');
+  movies.iqi = await justwatch.getMetas('MOVIE', ['iqi'], 'US');
+  movies.sha = await justwatch.getMetas('MOVIE', ['sha'], 'US');
+  movies.itv = await justwatch.getMetas('MOVIE', ['itv'], 'GB');
+  movies.bbc = await justwatch.getMetas('MOVIE', ['bbc'], 'GB');
+  movies.al4 = await justwatch.getMetas('MOVIE', ['al4'], 'GB');
 
   series.nfx = await justwatch.getMetas('SHOW', ['nfx'], 'GB');
   series.nfk = await justwatch.getMetas('SHOW', ['nfk'], 'US');
@@ -130,7 +141,15 @@ async function loadNewCatalog() {
   series.sgo = await justwatch.getMetas('SHOW', ['sgo'], 'DE', 'de');
   series.sonyliv = await justwatch.getMetas('SHOW', ['sonyliv'], 'IN', 'hi');
   series.mp9 = await justwatch.getMetas('SHOW', ['mp9'], 'ES', 'es');
-  
+  series.shd = await justwatch.getMetas('SHOW', ['shd'], 'US');
+  series.bbo = await justwatch.getMetas('SHOW', ['bbo'], 'US');
+  series.act = await justwatch.getMetas('SHOW', ['act'], 'US');
+  series.iqi = await justwatch.getMetas('SHOW', ['iqi'], 'US');
+  series.sha = await justwatch.getMetas('SHOW', ['sha'], 'US');
+  series.itv = await justwatch.getMetas('SHOW', ['itv'], 'GB');
+  series.bbc = await justwatch.getMetas('SHOW', ['bbc'], 'GB');
+  series.al4 = await justwatch.getMetas('SHOW', ['al4'], 'GB');
+
   // Save to cache (if caching is enabled)
   if (USE_CACHE) {
     saveCatalogCache(movies, series);

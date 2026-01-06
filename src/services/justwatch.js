@@ -35,9 +35,7 @@ export default {
             "packages": providers,
             "excludeIrrelevantTitles": false,
             "presentationTypes": [],
-            "monetizationTypes": [
-              "FLATRATE",
-            ],
+            "monetizationTypes": [],
           },
           "language": language,
           "country": country

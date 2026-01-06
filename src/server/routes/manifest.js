@@ -40,6 +40,15 @@ function buildProviderCatalogs(selectedProviders) {
     'sgo': { name: 'Sky Go', types: ['movie', 'series'] },
     'sonyliv': { name: 'Sony Liv', types: ['movie', 'series'] },
     'mp9': { name: 'Movistar+', types: ['movie', 'series'] },
+    'shd': { name: 'Shudder', types: ['movie', 'series'] },
+    'bbo': { name: 'BritBox', types: ['movie', 'series'] },
+    'act': { name: 'Acorn TV', types: ['movie', 'series'] },
+    'itv': { name: 'ITVX', types: ['movie', 'series'] },
+    'bbc': { name: 'BBC iPlayer', types: ['movie', 'series'] },
+    'al4': { name: 'Channel 4', types: ['movie', 'series'] },
+    'crc': { name: 'Criterion Channel', types: ['movie'] },
+    'iqi': { name: 'iQIYI', types: ['movie', 'series'] },
+    'sha': { name: 'Shahid VIP', types: ['movie', 'series'] },
   };
 
   const seen = new Set();
