@@ -34,13 +34,13 @@ async function searchJustWatchByTitle(title, releaseYear, country = 'US', type =
   
   const filter = {
     searchQuery: title,
-    objectTypes: [type],
+    objectTypes: [], // [type]
   };
   
   // Optionally filter by Netflix provider
-  if (withNetflixFilter) {
+  //if (withNetflixFilter) {
     filter.packages = ['nfx'];
-  }
+  //}
   
   const query = {
     operationName: 'SearchTitles',
@@ -150,29 +150,16 @@ async function searchJustWatchByTitle(title, releaseYear, country = 'US', type =
     
     if (fuzzyYearMatch) return fuzzyYearMatch;
     
-    // 4. Title contains search term + year match (±1)
+    // 4. Title contains search term
     const containsMatch = edges.find((edge) => {
       const content = edge.node.content;
       const edgeTitle = normalizeForMatch(content?.title || '');
-      const edgeYear = content?.originalReleaseYear;
-      const yearDiff = Math.abs(edgeYear - releaseYear);
-      return (edgeTitle.includes(normalizedSearch) || normalizedSearch.includes(edgeTitle)) 
-        && yearDiff <= 1;
+      return (edgeTitle.includes(normalizedSearch) || normalizedSearch.includes(edgeTitle));
     });
     
     if (containsMatch) return containsMatch;
-    
-    // 5. First result with year match (±1)
-    const yearMatch = edges.find((edge) => {
-      const content = edge.node.content;
-      const edgeYear = content?.originalReleaseYear;
-      return Math.abs(edgeYear - releaseYear) <= 1;
-    });
-    
-    if (yearMatch) return yearMatch;
-    
-    // 6. Return first result as fallback
-    return edges[0];
+
+    return null;
   } catch (error) {
     // Don't log 404s or network errors as errors, they're expected
     if (error.response?.status !== 404 && error.code !== 'ECONNABORTED') {
@@ -280,6 +267,7 @@ async function resolveTitle(title, releaseYear, type, country = 'US') {
   if (!imdbId) {
     resolutionCache[cacheKey] = null;
     saveResolutionCache(resolutionCache);
+    console.warn(`No IMDB ID found for ${title} (${releaseYear})`);
     return null;
   }
 
@@ -292,6 +280,8 @@ async function resolveTitle(title, releaseYear, type, country = 'US') {
   // Cache the result
   resolutionCache[cacheKey] = result;
   saveResolutionCache(resolutionCache);
+
+  console.log(`Resolved ${title} (${releaseYear}) to IMDB ID ${imdbId}`);
 
   return result;
 }

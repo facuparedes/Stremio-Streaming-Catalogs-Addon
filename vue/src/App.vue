@@ -32,7 +32,7 @@
                         <div class="text-gray-300">
                             <form class="space-y-6" @submit.prevent="installAddon">
                                 <!-- Netflix Top 10 Section -->
-                                <div class="pb-6 border-b border-gray-700">
+                                <div v-if="enableNetflixTop10" class="pb-6 border-b border-gray-700">
                                     <p class="text-gray-500 mb-3 text-sm">Netflix Top 10:</p>
                                     <div class="space-y-3">
                                         <label class="flex items-center text-sm text-gray-300 cursor-pointer">
@@ -540,6 +540,7 @@ const state = reactive({
         'atp',
         'hbm',
     ],
+    enableNetflixTop10: false,
     netflixTop10Global: true,
     netflixTop10Country: false,
     netflixTop10CountryCode: getNetflixTop10CountryCode(),
