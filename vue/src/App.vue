@@ -613,7 +613,7 @@ const state = reactive({
     'hbm',
   ],
   enableNetflixTop10: false,
-  netflixTop10Global: true,
+  netflixTop10Global: false,
   netflixTop10Country: false,
   netflixTop10CountryCode: getNetflixTop10CountryCode(),
   countryCode: null,
