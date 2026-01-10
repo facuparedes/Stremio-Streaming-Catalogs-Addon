@@ -214,14 +214,6 @@ export function handleDefaultManifest(req, res, mixpanel) {
         id: 'atp',
         type: 'series',
         name: 'Apple TV+',
-      }, {
-        id: 'netflix-top10-global',
-        type: 'movie',
-        name: 'Netflix Top 10 Movies (Global)',
-      }, {
-        id: 'netflix-top10-global',
-        type: 'series',
-        name: 'Netflix Top 10 Shows (Global)',
       },
     ],
     resources: ['catalog'],

@@ -674,8 +674,8 @@ function installAddon() {
     state.rpdbKey,
     state.countryCode || getCountryCodeFromCountry(state.country),
     state.timeStamp || Number(new Date()),
-    state.netflixTop10Global ? '1' : '0',
-    state.netflixTop10Country ? '1' : '0',
+    state.netflixTop10Global || '0',
+    state.netflixTop10Country || '0',
     state.netflixTop10CountryCode || ''
   ];
 
