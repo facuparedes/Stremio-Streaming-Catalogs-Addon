@@ -104,6 +104,12 @@ app.get("/:configuration/manifest.json", (c) => {
 app.get("/:configuration/catalog/:type/:id/:extra{.+$}?", (c) => {
   const adminToken = c.env.ADMIN_TOKEN || c.env.VITE_ADMIN_TOKEN;
   return adapt(async (req, res, mixpanel) => {
+    // Ensure .json is stripped from the last parameter if route matched it
+    if (req.params.extra && req.params.extra.endsWith(".json")) {
+      req.params.extra = req.params.extra.replace(".json", "");
+    } else if (req.params.id && req.params.id.endsWith(".json")) {
+      req.params.id = req.params.id.replace(".json", "");
+    }
     await handleCatalog(req, res, {}, {}, mixpanel);
   }, adminToken)(c);
 });

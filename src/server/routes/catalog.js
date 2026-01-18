@@ -62,6 +62,14 @@ export async function handleCatalog(req, res, movies, series, mixpanel) {
 
   let id = req.params.id;
 
+  // Cleanup id and extra if they contain .json extension from the URL
+  if (id && id.endsWith(".json")) {
+    id = id.replace(".json", "");
+  }
+  if (req.params.extra && req.params.extra.endsWith(".json")) {
+    req.params.extra = req.params.extra.replace(".json", "");
+  }
+
   // Legacy addon, netflix-only catalog support
   if (id === "top") {
     id = "nfx";
@@ -82,48 +90,32 @@ export async function handleCatalog(req, res, movies, series, mixpanel) {
       `Netflix Top 10 request: id=${id}, isGlobal=${isGlobal}, countryCode=${countryCode}, type=${type}`,
     );
 
-    // Use async handler
-    (async () => {
-      try {
-        let metas;
-        if (isGlobal) {
-          console.log(
-            `Fetching global Netflix Top 10 (${type}) in ${language}`,
-          );
-          metas = await getNetflixTop10Global(type, language);
-        } else {
-          console.log(
-            `Fetching Netflix Top 10 for country ${countryCode} (${type}) in ${language}`,
-          );
-          metas = await getNetflixTop10Catalog(countryCode, type, language);
-        }
-        console.log(`Returning ${metas.length} metas for ${id}`);
-        res.send({ metas: replaceRpdbPosters(rpdbKey, metas) });
-      } catch (error) {
-        console.error(
-          `Error fetching Netflix Top 10 catalog ${id}:`,
-          error.message,
+    try {
+      let metas;
+      if (isGlobal) {
+        console.log(`Fetching global Netflix Top 10 (${type}) in ${language}`);
+        metas = await getNetflixTop10Global(type, language);
+      } else {
+        console.log(
+          `Fetching Netflix Top 10 for country ${countryCode} (${type}) in ${language}`,
         );
-        if (error.stack) {
-          console.error(error.stack);
-        }
-        // Make sure response hasn't been sent yet
-        if (!res.headersSent) {
-          res.send({ metas: [] });
-        }
+        metas = await getNetflixTop10Catalog(countryCode, type, language);
       }
-    })().catch((error) => {
+      console.log(`Returning ${metas.length} metas for ${id}`);
+      res.send({ metas: replaceRpdbPosters(rpdbKey, metas) });
+    } catch (error) {
       console.error(
-        `Unhandled error in Netflix Top 10 catalog ${id}:`,
+        `Error fetching Netflix Top 10 catalog ${id}:`,
         error.message,
       );
       if (error.stack) {
         console.error(error.stack);
       }
+      // Make sure response hasn't been sent yet
       if (!res.headersSent) {
         res.send({ metas: [] });
       }
-    });
+    }
     return;
   }
 
