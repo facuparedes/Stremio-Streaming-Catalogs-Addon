@@ -12,6 +12,28 @@ const app = new Hono();
 
 app.use("*", cors());
 
+// Caching middleware for Cloudflare Workers
+app.use("*", async (c, next) => {
+  if (c.req.method !== "GET" || c.req.path.includes("configure")) {
+    return await next();
+  }
+
+  const cache = caches.default;
+  const response = await cache.match(c.req.raw);
+
+  if (response) {
+    return response;
+  }
+
+  await next();
+
+  if (c.res.ok) {
+    const res = c.res.clone();
+    res.headers.set("Cache-Control", "public, max-age=3600");
+    c.executionCtx.waitUntil(cache.put(c.req.raw, res));
+  }
+});
+
 // Helper to adapt Express-like handlers to Hono
 const adapt = (handler, adminToken) => async (c) => {
   const req = {

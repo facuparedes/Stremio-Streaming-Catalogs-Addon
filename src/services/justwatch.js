@@ -1,7 +1,8 @@
 import { fetchCinemetaMeta, getBasicMeta } from "./cinemeta.js";
 
-const AMOUNT = 100;
-const AMOUNT_TO_VERIFY = 24;
+const AMOUNT = 30;
+const AMOUNT_TO_VERIFY = 5;
+const SUBREQUEST_LIMIT = 45; // Stay below Cloudflare's 50 limit
 const DUPES_CACHE = {};
 const DELETED_CACHE = [];
 
