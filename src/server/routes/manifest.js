@@ -176,7 +176,7 @@ export function handleConfiguredManifest(req, res, mixpanel) {
   res.send({
     id: "pw.ers.netflix-catalog",
     logo: "https://play-lh.googleusercontent.com/TBRwjS_qfJCSj1m7zZB93FnpJM5fSpMA_wUlFDLxWAb45T9RmwBvQd5cWR5viJJOhkI",
-    version: process.env.npm_package_version,
+    version: "1.1.1",
     name: "Streaming Catalogs",
     description: "Your favourite streaming services!",
     catalogs: catalogs,
@@ -208,7 +208,7 @@ export function handleDefaultManifest(req, res, mixpanel) {
   res.send({
     id: "pw.ers.netflix-catalog",
     logo: "https://play-lh.googleusercontent.com/TBRwjS_qfJCSj1m7zZB93FnpJM5fSpMA_wUlFDLxWAb45T9RmwBvQd5cWR5viJJOhkI",
-    version: process.env.npm_package_version,
+    version: "1.1.1",
     name: "Streaming Catalogs",
     description:
       "Trending movies and series on Netflix, HBO Max, Disney+, Apple TV+ and more. Configure to choose your favourite services.",
