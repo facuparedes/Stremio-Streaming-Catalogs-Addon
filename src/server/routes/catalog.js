@@ -147,7 +147,9 @@ export async function handleCatalog(req, res, movies, series, mixpanel) {
       metas = localizedCache[type][cacheKey];
     } else {
       try {
-        console.log(`Fetching localized catalog for ${id} (${type}): ${cacheKey}`);
+        console.log(
+          `Fetching localized catalog for ${id} (${type}): ${cacheKey}`,
+        );
         metas = await justwatch.getMetas(
           type === "movie" ? "MOVIE" : "SHOW",
           [id],
