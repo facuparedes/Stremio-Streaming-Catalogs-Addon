@@ -22,8 +22,14 @@ export async function handleCatalog(req, res, movies, series, mixpanel) {
   res.setHeader("content-type", "application/json");
 
   // Parse config
-  const buffer = Buffer.from(req.params?.configuration || "", "base64");
-  const configParts = buffer.toString("ascii")?.split(":");
+  // Ensure configuration is URL-decoded before base64 decoding (for Cloudflare)
+  const configParam = req.params?.configuration || "";
+  const decodedConfigParam = configParam.includes("%")
+    ? decodeURIComponent(configParam)
+    : configParam;
+  const buffer = Buffer.from(decodedConfigParam, "base64");
+  const configString = buffer.toString("ascii");
+  const configParts = configString.split(":");
   let [
     token,
     selectedProviders,
@@ -123,7 +129,8 @@ export async function handleCatalog(req, res, movies, series, mixpanel) {
   const type = req.params.type;
   const country = countryCode || "US";
   const lang = language || "en";
-  const cacheKey = `${id}:${country}:${lang}`;
+  // Include type in cache key and use a more descriptive name
+  const cacheKey = `${type}:${id}:${country}:${lang}`;
 
   let metas = [];
 
@@ -136,11 +143,11 @@ export async function handleCatalog(req, res, movies, series, mixpanel) {
     metas = type === "movie" ? movies[id] : series[id];
   } else {
     // Check in-memory localized cache
-    if (localizedCache[type][cacheKey]) {
+    if (localizedCache[type] && localizedCache[type][cacheKey]) {
       metas = localizedCache[type][cacheKey];
     } else {
       try {
-        console.log(`Fetching localized catalog: ${cacheKey}`);
+        console.log(`Fetching localized catalog for ${id} (${type}): ${cacheKey}`);
         metas = await justwatch.getMetas(
           type === "movie" ? "MOVIE" : "SHOW",
           [id],
@@ -150,6 +157,7 @@ export async function handleCatalog(req, res, movies, series, mixpanel) {
 
         // Only cache if we got results
         if (metas && metas.length > 0) {
+          if (!localizedCache[type]) localizedCache[type] = {};
           localizedCache[type][cacheKey] = metas;
         }
       } catch (error) {
