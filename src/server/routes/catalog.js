@@ -1,71 +1,109 @@
-import { getNetflixTop10Catalog, getNetflixTop10Global } from '../../services/netflix/resolver.js';
-import { replaceRpdbPosters } from '../../lib/stremio.js';
+import {
+  getNetflixTop10Catalog,
+  getNetflixTop10Global,
+} from "../../services/netflix/resolver.js";
+import { replaceRpdbPosters } from "../../lib/stremio.js";
+import justwatch from "../../services/justwatch.js";
+
+// In-memory cache for localized catalogs
+const localizedCache = {
+  movie: {},
+  series: {},
+};
 
 /**
  * Catalog route handler
  */
-export function handleCatalog(req, res, movies, series, mixpanel) {
-  res.setHeader('Cache-Control', 'max-age=86400,stale-while-revalidate=86400,stale-if-error=86400,public');
-  res.setHeader('content-type', 'application/json');
+export async function handleCatalog(req, res, movies, series, mixpanel) {
+  res.setHeader(
+    "Cache-Control",
+    "max-age=86400,stale-while-revalidate=86400,stale-if-error=86400,public",
+  );
+  res.setHeader("content-type", "application/json");
 
   // Parse config
-  const buffer = Buffer(req.params?.configuration || '', 'base64');
-  let [selectedProviders, rpdbKey, countryCode, installedAt] = buffer.toString('ascii')?.split(':');
-
-  // Handle legacy RPDB key format
-  if (String(rpdbKey || '').startsWith('16')) {
-    installedAt = rpdbKey;
-    rpdbKey = null;
-  }
-
-  mixpanel && mixpanel.track('catalog', {
-    ip: req.ip,
-    distinct_id: req.ip.replace(/\.|:/g, 'Z'),
-    configuration: req.params?.configuration,
+  const buffer = Buffer.from(req.params?.configuration || "", "base64");
+  const configParts = buffer.toString("ascii")?.split(":");
+  let [
+    token,
     selectedProviders,
     rpdbKey,
     countryCode,
     installedAt,
-    catalog_type: req.params.type,
-    catalog_id: req.params.id,
-    catalog_extra: req.params?.extra,
-  });
+    netflixTop10Global,
+    netflixTop10Country,
+    netflixTop10CountryCode,
+    language,
+  ] = configParts;
+
+  // Handle legacy RPDB key format
+  if (String(rpdbKey || "").startsWith("16")) {
+    installedAt = rpdbKey;
+    rpdbKey = null;
+  }
+
+  // Default language to English
+  language = language || "en";
+
+  mixpanel &&
+    mixpanel.track("catalog", {
+      ip: req.ip,
+      distinct_id: req.ip.replace(/\.|:/g, "Z"),
+      configuration: req.params?.configuration,
+      selectedProviders,
+      rpdbKey,
+      countryCode,
+      installedAt,
+      language,
+      catalog_type: req.params.type,
+      catalog_id: req.params.id,
+      catalog_extra: req.params?.extra,
+    });
 
   let id = req.params.id;
-  
+
   // Legacy addon, netflix-only catalog support
-  if (id === 'top') {
-    id = 'nfx';
+  if (id === "top") {
+    id = "nfx";
   }
-  
+
   // Jio and Hotstar merged - fallback hst to jhs
-  if (id === 'hst') {
-    id = 'jhs';
+  if (id === "hst") {
+    id = "jhs";
   }
 
   // Handle Netflix Top 10 catalogs
-  if (id.startsWith('netflix-top10-')) {
-    const isGlobal = id === 'netflix-top10-global';
-    const countryCode = isGlobal ? null : id.replace('netflix-top10-', '');
-    const type = req.params.type === 'movie' ? 'movies' : 'shows';
+  if (id.startsWith("netflix-top10-")) {
+    const isGlobal = id === "netflix-top10-global";
+    const countryCode = isGlobal ? null : id.replace("netflix-top10-", "");
+    const type = req.params.type === "movie" ? "movies" : "shows";
 
-    console.log(`Netflix Top 10 request: id=${id}, isGlobal=${isGlobal}, countryCode=${countryCode}, type=${type}`);
+    console.log(
+      `Netflix Top 10 request: id=${id}, isGlobal=${isGlobal}, countryCode=${countryCode}, type=${type}`,
+    );
 
     // Use async handler
     (async () => {
       try {
         let metas;
         if (isGlobal) {
-          console.log(`Fetching global Netflix Top 10 (${type})`);
-          metas = await getNetflixTop10Global(type);
+          console.log(
+            `Fetching global Netflix Top 10 (${type}) in ${language}`,
+          );
+          metas = await getNetflixTop10Global(type, language);
         } else {
-          console.log(`Fetching Netflix Top 10 for country ${countryCode} (${type})`);
-          metas = await getNetflixTop10Catalog(countryCode, type);
+          console.log(
+            `Fetching Netflix Top 10 for country ${countryCode} (${type}) in ${language}`,
+          );
+          metas = await getNetflixTop10Catalog(countryCode, type, language);
         }
         console.log(`Returning ${metas.length} metas for ${id}`);
         res.send({ metas: replaceRpdbPosters(rpdbKey, metas) });
       } catch (error) {
-        console.error(`Error fetching Netflix Top 10 catalog ${id}:`, error.message);
+        console.error(
+          `Error fetching Netflix Top 10 catalog ${id}:`,
+          error.message,
+        );
         if (error.stack) {
           console.error(error.stack);
         }
@@ -75,7 +113,10 @@ export function handleCatalog(req, res, movies, series, mixpanel) {
         }
       }
     })().catch((error) => {
-      console.error(`Unhandled error in Netflix Top 10 catalog ${id}:`, error.message);
+      console.error(
+        `Unhandled error in Netflix Top 10 catalog ${id}:`,
+        error.message,
+      );
       if (error.stack) {
         console.error(error.stack);
       }
@@ -87,14 +128,49 @@ export function handleCatalog(req, res, movies, series, mixpanel) {
   }
 
   // Handle regular provider catalogs
-  if (req.params.type === 'movie') {
-    res.send({ metas: replaceRpdbPosters(rpdbKey, movies[id] || []) });
-    return;
+  const type = req.params.type;
+  const country = countryCode || "US";
+  const lang = language || "en";
+  const cacheKey = `${id}:${country}:${lang}`;
+
+  let metas = [];
+
+  // Use pre-cached data for default language (English)
+  // This maintains performance for the majority of users
+  if (
+    lang === "en" &&
+    (type === "movie" ? movies[id] : series[id])?.length > 0
+  ) {
+    metas = type === "movie" ? movies[id] : series[id];
+  } else {
+    // Check in-memory localized cache
+    if (localizedCache[type][cacheKey]) {
+      metas = localizedCache[type][cacheKey];
+    } else {
+      try {
+        console.log(`Fetching localized catalog: ${cacheKey}`);
+        metas = await justwatch.getMetas(
+          type === "movie" ? "MOVIE" : "SHOW",
+          [id],
+          country,
+          lang,
+        );
+
+        // Only cache if we got results
+        if (metas && metas.length > 0) {
+          localizedCache[type][cacheKey] = metas;
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching localized catalog ${cacheKey}:`,
+          error.message,
+        );
+        metas = [];
+      }
+    }
   }
 
-  if (req.params.type === 'series') {
-    res.send({ metas: replaceRpdbPosters(rpdbKey, series[id] || []) });
-    return;
+  if (!res.headersSent) {
+    res.send({ metas: replaceRpdbPosters(rpdbKey, metas || []) });
   }
 }
-

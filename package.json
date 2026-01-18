@@ -7,16 +7,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "deploy": "npm run build --prefix vue && wrangler deploy"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "@hono/node-server": "^1.19.9",
+    "hono": "^4.11.4",
+    "nodemon": "^2.0.19",
+    "wrangler": "^4.59.2"
   },
   "dependencies": {
     "axios": "^0.27.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.18.1",
     "mixpanel": "^0.17.0"
   }

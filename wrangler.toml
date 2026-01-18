@@ -1,0 +1,14 @@
+name = "stremio-streaming-catalogs"
+main = "src/worker.js"
+compatibility_date = "2024-04-03"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# MIXPANEL_KEY = ""
+# ADMIN_TOKEN = ""
+# VITE_ADMIN_TOKEN = ""
+# VITE_APP_URL = "https://your-worker.workers.dev"
+
+[assets]
+directory = "./vue/dist"
+binding = "ASSETS"
