@@ -6,6 +6,8 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 # VITE_ADMIN_TOKEN = ""
 # VITE_APP_URL = "https://your-worker.workers.dev"
+FORCE_REFRESH = "false"
+CACHE_VERSION = "v2"
 
 [assets]
 directory = "./vue/dist"

@@ -14,13 +14,20 @@ app.use("*", cors());
 
 // Caching middleware for Cloudflare Workers
 app.use("*", async (c, next) => {
-  if (c.req.method !== "GET" || c.req.path.includes("configure")) {
+  if (
+    c.req.method !== "GET" ||
+    c.req.path.includes("configure") ||
+    c.env.FORCE_REFRESH === "true"
+  ) {
     return await next();
   }
 
   const cache = caches.default;
-  // Use URL string as cache key for better reliability in some environments
-  const cacheKey = new Request(c.req.url, c.req.raw);
+  // Use CACHE_VERSION in the URL to effectively "clear" cache by changing the key
+  const cacheKey = new Request(
+    c.req.url + "?cv=" + (c.env.CACHE_VERSION || "1"),
+    c.req.raw,
+  );
   const response = await cache.match(cacheKey);
 
   if (response) {
@@ -31,7 +38,6 @@ app.use("*", async (c, next) => {
 
   if (c.res.ok) {
     const res = c.res.clone();
-    // Cache for 1 hour
     res.headers.set("Cache-Control", "public, max-age=3600");
     c.executionCtx.waitUntil(cache.put(cacheKey, res));
   }
@@ -99,6 +105,27 @@ app.get("/manifest.json", async (c) => {
   return adapt(handleDefaultManifest)(c);
 });
 
+// Endpoint to purge the Cloudflare cache
+app.get("/purge-cache", async (c) => {
+  const adminToken = c.env.ADMIN_TOKEN || c.env.VITE_ADMIN_TOKEN;
+  const token = c.req.query("token");
+
+  if (adminToken && token !== adminToken) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const cache = caches.default;
+  // Cloudflare doesn't provide a "purge all" API for the Cache API inside workers,
+  // but we can signal a refresh via an environment variable if needed.
+  // This endpoint serves as a placeholder for manual cache invalidation logic
+  // if specific URLs are known, or simply as a confirmation.
+  return c.json({
+    message:
+      "To clear the cache, set FORCE_REFRESH='true' in your worker variables.",
+    current_force_refresh: c.env.FORCE_REFRESH || "false",
+  });
+});
+
 app.get("/:configuration/manifest.json", (c) => {
   const adminToken = c.env.ADMIN_TOKEN || c.env.VITE_ADMIN_TOKEN;
   return adapt(handleConfiguredManifest, adminToken)(c);
@@ -108,15 +135,10 @@ app.get("/:configuration/catalog/:type/:id/:extra{.+$}?", (c) => {
   const adminToken = c.env.ADMIN_TOKEN || c.env.VITE_ADMIN_TOKEN;
   return adapt(async (req, res, mixpanel) => {
     // Ensure .json is stripped from the last parameter if route matched it
-    // Check extra first, then id
-    if (req.params.extra) {
-      if (req.params.extra.endsWith(".json")) {
-        req.params.extra = req.params.extra.replace(".json", "");
-      }
-    } else if (req.params.id) {
-      if (req.params.id.endsWith(".json")) {
-        req.params.id = req.params.id.replace(".json", "");
-      }
+    if (req.params.extra && req.params.extra.endsWith(".json")) {
+      req.params.extra = req.params.extra.replace(".json", "");
+    } else if (req.params.id && req.params.id.endsWith(".json")) {
+      req.params.id = req.params.id.replace(".json", "");
     }
     await handleCatalog(req, res, {}, {}, mixpanel);
   }, adminToken)(c);
