@@ -86,11 +86,28 @@ app.get("/:configuration/catalog/:type/:id/:extra{.+$}?", (c) => {
   }, adminToken)(c);
 });
 
+// Serve frontend for configuration
+app.get("/configure", async (c) => {
+  return c.env.ASSETS
+    ? c.env.ASSETS.fetch(new Request(new URL("/index.html", c.req.url)))
+    : c.notFound();
+});
+
+app.get("/:configuration/configure", async (c) => {
+  return c.env.ASSETS
+    ? c.env.ASSETS.fetch(new Request(new URL("/index.html", c.req.url)))
+    : c.notFound();
+});
+
 // Serve frontend if not handled by Assets binding
 app.all("*", async (c) => {
-  // Assets are usually handled by the 'assets' config in wrangler.toml
-  // but we can have a fallback here if needed.
-  return c.env.ASSETS ? c.env.ASSETS.fetch(c.req.raw) : c.notFound();
+  if (!c.env.ASSETS) return c.notFound();
+
+  const res = await c.env.ASSETS.fetch(c.req.raw);
+  if (res.status === 404 && !c.req.path.includes(".")) {
+    return c.env.ASSETS.fetch(new Request(new URL("/index.html", c.req.url)));
+  }
+  return res;
 });
 
 export default app;
