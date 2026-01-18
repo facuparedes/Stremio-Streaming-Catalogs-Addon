@@ -2,10 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = import.meta.url ? fileURLToPath(import.meta.url) : '';
+const __dirname = __filename ? path.dirname(__filename) : '';
 
-const CACHE_DIR = path.join(__dirname, "../../cache");
+const CACHE_DIR = __dirname ? path.join(__dirname, '../../cache') : '/tmp';
 
 /**
  * Ensure cache directory exists
