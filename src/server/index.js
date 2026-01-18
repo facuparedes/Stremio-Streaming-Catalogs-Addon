@@ -17,8 +17,8 @@ import {
 import { handleCatalog } from "./routes/catalog.js";
 import { validateToken } from "./middleware.js";
 
-const __filename = import.meta.url ? fileURLToPath(import.meta.url) : '';
-const __dirname = __filename ? path.dirname(__filename) : '';
+const __filename = import.meta.url ? fileURLToPath(import.meta.url) : "";
+const __dirname = __filename ? path.dirname(__filename) : "";
 
 const REFRESH_INTERVAL = process.env.REFRESH_INTERVAL || 21600000; // 6 hours in milliseconds
 const USE_CACHE = process.env.USE_CACHE !== "false"; // Default to true
