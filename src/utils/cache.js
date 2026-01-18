@@ -11,8 +11,15 @@ const CACHE_DIR = __dirname ? path.join(__dirname, "../../cache") : "/tmp";
  * Ensure cache directory exists
  */
 export function ensureCacheDir() {
-  if (!fs.existsSync(CACHE_DIR)) {
-    fs.mkdirSync(CACHE_DIR, { recursive: true });
+  try {
+    if (fs.existsSync && !fs.existsSync(CACHE_DIR)) {
+      if (fs.mkdirSync) {
+        fs.mkdirSync(CACHE_DIR, { recursive: true });
+      }
+    }
+  } catch (error) {
+    // Ignore fs errors in environments like Cloudflare Workers
+    console.debug("Cache directory not available:", error.message);
   }
 }
 
@@ -24,7 +31,7 @@ export function loadCatalogCache(refreshInterval = 21600000) {
   const cacheFile = path.join(CACHE_DIR, "catalog-cache.json");
 
   try {
-    if (fs.existsSync(cacheFile)) {
+    if (fs.existsSync && fs.existsSync(cacheFile)) {
       const cacheData = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
       const now = Date.now();
 
@@ -73,9 +80,11 @@ export function clearCatalogCache() {
   const cacheFile = path.join(CACHE_DIR, "catalog-cache.json");
 
   try {
-    if (fs.existsSync(cacheFile)) {
-      fs.unlinkSync(cacheFile);
-      console.log("Cache cleared successfully");
+    if (fs.existsSync && fs.existsSync(cacheFile)) {
+      if (fs.unlinkSync) {
+        fs.unlinkSync(cacheFile);
+        console.log("Cache cleared successfully");
+      }
     }
   } catch (error) {
     console.log("Error clearing cache:", error.message);
@@ -90,7 +99,7 @@ export function loadResolutionCache(cacheDurationMs = 7 * 24 * 60 * 60 * 1000) {
   const cacheFile = path.join(CACHE_DIR, "netflix-top10-resolved.json");
 
   try {
-    if (fs.existsSync(cacheFile)) {
+    if (fs.existsSync && fs.existsSync(cacheFile)) {
       const cacheData = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
       const now = Date.now();
 
@@ -133,7 +142,7 @@ export function loadNetflixTop10Cache(cacheDurationMs = 24 * 60 * 60 * 1000) {
   const cacheFile = path.join(CACHE_DIR, "netflix-top10-catalog.json");
 
   try {
-    if (fs.existsSync(cacheFile)) {
+    if (fs.existsSync && fs.existsSync(cacheFile)) {
       const cacheData = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
       const now = Date.now();
 
