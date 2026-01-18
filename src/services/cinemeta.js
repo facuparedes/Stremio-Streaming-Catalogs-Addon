@@ -1,4 +1,3 @@
-
 /**
  * Fetch metadata from Cinemeta API
  * @param {string} imdbId - IMDB ID (e.g., "tt1234567")
@@ -8,11 +7,12 @@
  */
 export async function fetchCinemetaMeta(imdbId, type, fallbackTitle = null) {
   // Normalize type to cinemeta format
-  const cinemetaType = type === 'MOVIE' || type === 'movie' ? 'movie' : 'series';
-  
+  const cinemetaType =
+    type === "MOVIE" || type === "movie" ? "movie" : "series";
+
   try {
     const response = await fetch(
-      `https://v3-cinemeta.strem.io/meta/${cinemetaType}/${imdbId}.json`
+      `https://v3-cinemeta.strem.io/meta/${cinemetaType}/${imdbId}.json`,
     );
 
     if (response.ok) {
@@ -44,9 +44,8 @@ export function getBasicMeta(imdbId, title, type) {
   return {
     id: imdbId,
     name: title,
-    type: type === 'MOVIE' || type === 'movie' ? 'movie' : 'series',
+    type: type === "MOVIE" || type === "movie" ? "movie" : "series",
     poster: `https://live.metahub.space/poster/medium/${imdbId}/img`,
-    posterShape: 'poster',
+    posterShape: "poster",
   };
 }
-

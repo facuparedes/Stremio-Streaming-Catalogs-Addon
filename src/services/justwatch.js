@@ -80,17 +80,26 @@ export default {
             imdbId = DUPES_CACHE[imdbId];
           } else if (index < AMOUNT_TO_VERIFY && this.verify) {
             try {
-              const headRes = await fetch(`https://www.imdb.com/title/${imdbId}/`, {
-                method: "HEAD",
-                redirect: "manual",
-                headers: {
-                  "User-Agent":
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/110.0",
+              const headRes = await fetch(
+                `https://www.imdb.com/title/${imdbId}/`,
+                {
+                  method: "HEAD",
+                  redirect: "manual",
+                  headers: {
+                    "User-Agent":
+                      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/110.0",
+                  },
                 },
-              });
+              );
 
-              if (headRes.status === 308 || headRes.status === 301 || headRes.status === 302) {
-                const newImdbId = headRes.headers.get("location")?.split("/")?.[2];
+              if (
+                headRes.status === 308 ||
+                headRes.status === 301 ||
+                headRes.status === 302
+              ) {
+                const newImdbId = headRes.headers
+                  .get("location")
+                  ?.split("/")?.[2];
                 console.log("DUPE imdb redirects to", newImdbId);
                 DUPES_CACHE[imdbId] = newImdbId;
                 imdbId = newImdbId;
