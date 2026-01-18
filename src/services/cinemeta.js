@@ -1,4 +1,3 @@
-import axios from 'axios';
 
 /**
  * Fetch metadata from Cinemeta API
@@ -12,25 +11,23 @@ export async function fetchCinemetaMeta(imdbId, type, fallbackTitle = null) {
   const cinemetaType = type === 'MOVIE' || type === 'movie' ? 'movie' : 'series';
   
   try {
-    const cinemetaResponse = await axios.get(
-      `https://v3-cinemeta.strem.io/meta/${cinemetaType}/${imdbId}.json`,
-      { timeout: 5000, validateStatus: (status) => status < 500 } // Don't throw on 404
+    const response = await fetch(
+      `https://v3-cinemeta.strem.io/meta/${cinemetaType}/${imdbId}.json`
     );
 
-    if (cinemetaResponse.status === 200 && cinemetaResponse.data?.meta) {
-      return {
-        ...cinemetaResponse.data.meta,
-        id: imdbId,
-        name: cinemetaResponse.data.meta.name || fallbackTitle,
-        videos: undefined, // Remove videos array
-      };
+    if (response.ok) {
+      const data = await response.json();
+      if (data?.meta) {
+        return {
+          ...data.meta,
+          id: imdbId,
+          name: data.meta.name || fallbackTitle,
+          videos: undefined, // Remove videos array
+        };
+      }
     }
   } catch (error) {
-    // If cinemeta fails (network error, timeout, etc), return null
-    // 404s are handled by validateStatus above
-    if (error.code !== 'ECONNABORTED' && error.response?.status !== 404) {
-      console.log(`Cinemeta fetch failed for ${imdbId}:`, error.message);
-    }
+    console.log(`Cinemeta fetch failed for ${imdbId}:`, error.message);
   }
 
   return null;

@@ -1,6 +1,3 @@
-import axios from "axios";
-import https from "node:https";
-
 const GRAPHQL_ENDPOINT = "https://pulse.prod.cloud.netflix.com/graphql";
 const PERSISTED_QUERY_ID = "10ca20d3-e892-44af-b52a-f1107400a873";
 const PERSISTED_QUERY_VERSION = 102;
@@ -183,19 +180,14 @@ function buildGraphQLQuery(countrySlug, typeSegment, week = null) {
 async function fetchGraphQL(countrySlug, typeSegment, options = {}) {
   const query = buildGraphQLQuery(countrySlug, typeSegment, options.week);
 
-  const axiosOptions = {
+  const response = await fetch(GRAPHQL_ENDPOINT, {
     method: "POST",
-    url: GRAPHQL_ENDPOINT,
     headers: HEADERS,
-    data: query,
-    timeout: options.timeout ?? 15000,
-  };
+    body: JSON.stringify(query),
+    signal: AbortSignal.timeout(options.timeout ?? 15000),
+  });
 
-  if (options.allowInsecureTLS) {
-    axiosOptions.httpsAgent = new https.Agent({ rejectUnauthorized: false });
-  }
-
-  const { data } = await axios(axiosOptions);
+  const data = await response.json();
 
   // Check for critical errors (non-authentication related, non-video-not-found)
   if (data.errors) {

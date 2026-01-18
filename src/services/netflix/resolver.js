@@ -1,4 +1,3 @@
-import axios from "axios";
 import { fetchNetflixTop10 } from "./fetcher.js";
 import {
   loadResolutionCache,
@@ -97,18 +96,22 @@ async function searchJustWatchByTitle(
   };
 
   try {
-    const response = await axios.post(JUSTWATCH_GRAPHQL_ENDPOINT, query, {
+    const rawResponse = await fetch(JUSTWATCH_GRAPHQL_ENDPOINT, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 10000,
+      body: JSON.stringify(query),
+      signal: AbortSignal.timeout(10000),
     });
 
-    if (response.data.errors) {
+    const data = await rawResponse.json();
+
+    if (data.errors) {
       return null;
     }
 
-    const edges = response.data.data?.popularTitles?.edges || [];
+    const edges = data.data?.popularTitles?.edges || [];
 
     if (edges.length === 0) {
       return null;
