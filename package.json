@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build": "cd vue && npm install && npm run build",
     "deploy": "npm run build --prefix vue && wrangler deploy"
   },
   "author": "",
