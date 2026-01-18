@@ -1,11 +1,11 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CACHE_DIR = path.join(__dirname, '../../cache');
+const CACHE_DIR = path.join(__dirname, "../../cache");
 
 /**
  * Ensure cache directory exists
@@ -21,26 +21,26 @@ export function ensureCacheDir() {
  */
 export function loadCatalogCache(refreshInterval = 21600000) {
   ensureCacheDir();
-  const cacheFile = path.join(CACHE_DIR, 'catalog-cache.json');
-  
+  const cacheFile = path.join(CACHE_DIR, "catalog-cache.json");
+
   try {
     if (fs.existsSync(cacheFile)) {
-      const cacheData = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      const cacheData = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
       const now = Date.now();
-      
+
       // Check if cache is still valid
-      if (cacheData.timestamp && (now - cacheData.timestamp) < refreshInterval) {
-        console.log('Loading catalog data from cache...');
+      if (cacheData.timestamp && now - cacheData.timestamp < refreshInterval) {
+        console.log("Loading catalog data from cache...");
         return {
           movies: cacheData.movies || {},
-          series: cacheData.series || {}
+          series: cacheData.series || {},
         };
       } else {
-        console.log('Cache expired, will fetch fresh data...');
+        console.log("Cache expired, will fetch fresh data...");
       }
     }
   } catch (error) {
-    console.log('Error loading cache:', error.message);
+    console.log("Error loading cache:", error.message);
   }
   return null;
 }
@@ -50,18 +50,18 @@ export function loadCatalogCache(refreshInterval = 21600000) {
  */
 export function saveCatalogCache(movies, series) {
   ensureCacheDir();
-  const cacheFile = path.join(CACHE_DIR, 'catalog-cache.json');
-  
+  const cacheFile = path.join(CACHE_DIR, "catalog-cache.json");
+
   try {
     const cacheData = {
       timestamp: Date.now(),
       movies,
-      series
+      series,
     };
     fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2));
-    console.log('Catalog data cached successfully');
+    console.log("Catalog data cached successfully");
   } catch (error) {
-    console.log('Error saving cache:', error.message);
+    console.log("Error saving cache:", error.message);
   }
 }
 
@@ -70,15 +70,15 @@ export function saveCatalogCache(movies, series) {
  */
 export function clearCatalogCache() {
   ensureCacheDir();
-  const cacheFile = path.join(CACHE_DIR, 'catalog-cache.json');
-  
+  const cacheFile = path.join(CACHE_DIR, "catalog-cache.json");
+
   try {
     if (fs.existsSync(cacheFile)) {
       fs.unlinkSync(cacheFile);
-      console.log('Cache cleared successfully');
+      console.log("Cache cleared successfully");
     }
   } catch (error) {
-    console.log('Error clearing cache:', error.message);
+    console.log("Error clearing cache:", error.message);
   }
 }
 
@@ -87,20 +87,20 @@ export function clearCatalogCache() {
  */
 export function loadResolutionCache(cacheDurationMs = 7 * 24 * 60 * 60 * 1000) {
   ensureCacheDir();
-  const cacheFile = path.join(CACHE_DIR, 'netflix-top10-resolved.json');
-  
+  const cacheFile = path.join(CACHE_DIR, "netflix-top10-resolved.json");
+
   try {
     if (fs.existsSync(cacheFile)) {
-      const cacheData = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      const cacheData = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
       const now = Date.now();
-      
+
       // Check if cache is still valid
-      if (cacheData.timestamp && (now - cacheData.timestamp) < cacheDurationMs) {
+      if (cacheData.timestamp && now - cacheData.timestamp < cacheDurationMs) {
         return cacheData.resolutions || {};
       }
     }
   } catch (error) {
-    console.log('Error loading resolution cache:', error.message);
+    console.log("Error loading resolution cache:", error.message);
   }
   return {};
 }
@@ -110,8 +110,8 @@ export function loadResolutionCache(cacheDurationMs = 7 * 24 * 60 * 60 * 1000) {
  */
 export function saveResolutionCache(resolutions) {
   ensureCacheDir();
-  const cacheFile = path.join(CACHE_DIR, 'netflix-top10-resolved.json');
-  
+  const cacheFile = path.join(CACHE_DIR, "netflix-top10-resolved.json");
+
   try {
     const cacheData = {
       timestamp: Date.now(),
@@ -119,7 +119,7 @@ export function saveResolutionCache(resolutions) {
     };
     fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2));
   } catch (error) {
-    console.log('Error saving resolution cache:', error.message);
+    console.log("Error saving resolution cache:", error.message);
   }
 }
 
@@ -130,25 +130,27 @@ export function saveResolutionCache(resolutions) {
  */
 export function loadNetflixTop10Cache(cacheDurationMs = 24 * 60 * 60 * 1000) {
   ensureCacheDir();
-  const cacheFile = path.join(CACHE_DIR, 'netflix-top10-catalog.json');
-  
+  const cacheFile = path.join(CACHE_DIR, "netflix-top10-catalog.json");
+
   try {
     if (fs.existsSync(cacheFile)) {
-      const cacheData = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      const cacheData = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
       const now = Date.now();
-      
+
       // Check if cache is still valid
-      if (cacheData.timestamp && (now - cacheData.timestamp) < cacheDurationMs) {
+      if (cacheData.timestamp && now - cacheData.timestamp < cacheDurationMs) {
         return {
           catalogs: cacheData.catalogs || {},
           timestamp: cacheData.timestamp,
         };
       } else {
-        console.log('Netflix Top 10 catalog cache expired, will fetch fresh data');
+        console.log(
+          "Netflix Top 10 catalog cache expired, will fetch fresh data",
+        );
       }
     }
   } catch (error) {
-    console.log('Error loading Netflix Top 10 catalog cache:', error.message);
+    console.log("Error loading Netflix Top 10 catalog cache:", error.message);
   }
   return {
     catalogs: {},
@@ -161,17 +163,16 @@ export function loadNetflixTop10Cache(cacheDurationMs = 24 * 60 * 60 * 1000) {
  */
 export function saveNetflixTop10Cache(catalogs) {
   ensureCacheDir();
-  const cacheFile = path.join(CACHE_DIR, 'netflix-top10-catalog.json');
-  
+  const cacheFile = path.join(CACHE_DIR, "netflix-top10-catalog.json");
+
   try {
     const cacheData = {
       timestamp: Date.now(),
       catalogs,
     };
     fs.writeFileSync(cacheFile, JSON.stringify(cacheData, null, 2));
-    console.log('Netflix Top 10 catalog cache saved successfully');
+    console.log("Netflix Top 10 catalog cache saved successfully");
   } catch (error) {
-    console.log('Error saving Netflix Top 10 catalog cache:', error.message);
+    console.log("Error saving Netflix Top 10 catalog cache:", error.message);
   }
 }
-
