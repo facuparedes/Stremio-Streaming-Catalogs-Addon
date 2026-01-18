@@ -13,7 +13,7 @@ export async function fetchCinemetaMeta(imdbId, type, fallbackTitle = null) {
   try {
     const response = await fetch(
       `https://v3-cinemeta.strem.io/meta/${cinemetaType}/${imdbId}.json`,
-      { signal: AbortSignal.timeout(5000) }
+      { signal: AbortSignal.timeout(5000) },
     );
 
     if (response.ok) {
