@@ -1,5 +1,5 @@
 import axios from 'axios';
-import https from 'https';
+import https from 'node:https';
 
 const GRAPHQL_ENDPOINT = 'https://pulse.prod.cloud.netflix.com/graphql';
 const PERSISTED_QUERY_ID = '10ca20d3-e892-44af-b52a-f1107400a873';

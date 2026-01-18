@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import Mixpanel from "mixpanel";
-import { fileURLToPath } from "url";
-import path from "path";
-import fs from "fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import fs from "node:fs";
 import justwatch from "../services/justwatch.js";
 import {
   loadCatalogCache,
